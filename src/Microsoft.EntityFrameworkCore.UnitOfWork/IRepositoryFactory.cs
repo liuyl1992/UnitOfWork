@@ -3,7 +3,7 @@
 namespace Microsoft.EntityFrameworkCore
 {
     /// <summary>
-    /// Defines the interfaces for <see cref="IRepository{TEntity}"/> interfaces.
+    /// 仓储工厂
     /// </summary>
     public interface IRepositoryFactory
     {
