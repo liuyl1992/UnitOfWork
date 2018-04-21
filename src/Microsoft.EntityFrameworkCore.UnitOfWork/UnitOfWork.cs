@@ -13,9 +13,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace Microsoft.EntityFrameworkCore
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
+    /// 工作单元默认实现
     /// </summary>
-    /// <typeparam name="TContext">The type of the db context.</typeparam>
+    /// <typeparam name="TContext"> DB上下文</typeparam>
     public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
     {
         private readonly TContext _context;
@@ -23,26 +23,26 @@ namespace Microsoft.EntityFrameworkCore
         private Dictionary<Type, object> repositories;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
+        ///初始化
         /// </summary>
-        /// <param name="context">The context.</param>
+        /// <param name="context">DB上下文</param>
         public UnitOfWork(TContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         /// <summary>
-        /// Gets the db context.
+        /// 获取DbContext
         /// </summary>
-        /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
+        /// <returns>DB上下文 <typeparamref name="TContext"/>.</returns>
         public TContext DbContext => _context;
 
         /// <summary>
-        /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
+        /// 修改数据库名称. 前提是数据库在同一台主机. NOTE: 仅仅适用于用Mysql
         /// </summary>
-        /// <param name="database">The database name.</param>
+        /// <param name="database">数据库名称</param>
         /// <remarks>
-        /// This only been used for supporting multiple databases in the same model. This require the databases in the same machine.
+        /// 这仅用于支持同一模型中的多个数据库。这需要数据库在同一台机器上。
         /// </remarks>
         public void ChangeDatabase(string database)
         {
@@ -57,7 +57,7 @@ namespace Microsoft.EntityFrameworkCore
                 connection.ConnectionString = connectionString;
             }
 
-            // Following code only working for mysql.
+            // 以下代码仅在Mysql中工作
             var items = _context.Model.GetEntityTypes();
             foreach (var item in items)
             {
@@ -69,10 +69,10 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        ///获取指定仓储对象 
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
+        /// <typeparam name="TEntity">Entity类型（对应于表名）</typeparam>
+        /// <returns>返回此仓储对象实例</returns>
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
         {
             if (repositories == null)
@@ -90,27 +90,27 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Executes the specified raw SQL command.
+        /// 执行指定的原生SQL指令
         /// </summary>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>The number of state entities written to database.</returns>
+        /// <param name="sql">原生SQL</param>
+        /// <param name="parameters">SQL参数</param>
+        /// <returns>写入数据库执行成功的状态实体的数量。</returns>
         public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlCommand(sql, parameters);
 
         /// <summary>
-        /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.
+        /// 使用原生SQL查询出指定类型的集合<typeparamref name="TEntity" /> data.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>An <see cref="IQueryable{T}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <param name="sql">原生SQL</param>
+        /// <param name="parameters">SQL参数</param>
+        /// <returns>An <see cref="IQueryable{T}" />返回满足指定条件的元素集合</returns>
         public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => _context.Set<TEntity>().FromSql(sql, parameters);
 
         /// <summary>
-        /// Saves all changes made in this context to the database.
+        /// 将此上下文中的所有更改保存到数据库。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <returns>The number of state entries written to the database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录。</param>
+        /// <returns>写入数据库执行成功的状态实体的数量。</returns>
         public int SaveChanges(bool ensureAutoHistory = false)
         {
             if (ensureAutoHistory)
@@ -122,10 +122,10 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Asynchronously saves all changes made in this unit of work to the database.
+        ///异步保存此次上下文对数据库所做的所有更改。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录</param>
+        /// <returns>A <see cref="Task{TResult}"/>这表示异步保存操.任务结果包含写入数据库的状态实体的数量。</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
         {
             if (ensureAutoHistory)
@@ -137,14 +137,14 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Saves all changes made in this context to the database with distributed transaction.
+        /// 异步将此上下文中的所有更改保存到具有分布式事务的数据库。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <returns>A <see cref="Task{TResult}"/>这表示异步保存操作。任务结果包含写入数据库的状态实体的数量。.</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
-            // TransactionScope will be included in .NET Core v2.0
+            // TransactionScope将包含在.NETCore v2.0中。
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -174,7 +174,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// 释放资源
         /// </summary>
         public void Dispose()
         {
@@ -184,7 +184,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// 释放资源
         /// </summary>
         /// <param name="disposing">The disposing.</param>
         protected virtual void Dispose(bool disposing)

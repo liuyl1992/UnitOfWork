@@ -2,23 +2,25 @@
 
 using System.Threading.Tasks;
 
-namespace Microsoft.EntityFrameworkCore {
+namespace Microsoft.EntityFrameworkCore
+{
     /// <summary>
-    /// Defines the interface(s) for generic unit of work.
+    /// 工作单元
     /// </summary>
-    public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext {
+    public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
+    {
         /// <summary>
-        /// Gets the db context.
+        /// 获取db context上下文.
         /// </summary>
-        /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
+        /// <returns>dbContext上下文实例</returns>
         TContext DbContext { get; }
 
         /// <summary>
-        /// Saves all changes made in this context to the database with distributed transaction.
+        /// 异步将此上下文中的所有更改保存到具有分布式事务的数据库。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <returns>A <see cref="Task{TResult}"/>这表示异步保存操作。任务结果包含写入数据库的状态实体的数量。.</returns>
         Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks);
     }
 }

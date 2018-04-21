@@ -8,9 +8,9 @@ namespace Microsoft.EntityFrameworkCore
     public interface IRepositoryFactory
     {
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        /// 获取指定实体的仓储对象
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="TEntity">实体类型</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     }

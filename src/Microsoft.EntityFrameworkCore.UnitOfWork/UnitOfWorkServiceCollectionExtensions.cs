@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Extension methods for setting up unit of work related services in an <see cref="IServiceCollection"/>.
+    /// 将工作单元组件注入到IServiceCollection中.
     /// </summary>
     public static class UnitOfWorkServiceCollectionExtensions
     {
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <remarks>
         /// This method only support one db context, if been called more than once, will throw exception.
         /// </remarks>
-        public static IServiceCollection AddUnitOfWork<TContext1, TContext2>(this IServiceCollection services) 
+        public static IServiceCollection AddUnitOfWork<TContext1, TContext2>(this IServiceCollection services)
             where TContext1 : DbContext
             where TContext2 : DbContext
         {

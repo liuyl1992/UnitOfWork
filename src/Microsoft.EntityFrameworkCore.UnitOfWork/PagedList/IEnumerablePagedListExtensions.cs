@@ -11,7 +11,7 @@ namespace Microsoft.EntityFrameworkCore
     public static class IEnumerablePagedListExtensions
     {
         /// <summary>
-        /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="pageIndex"/> and <paramref name="pageSize"/>.
+        /// 对指定区间内的数据源分页
         /// </summary>
         /// <typeparam name="T">The type of the source.</typeparam>
         /// <param name="source">The source to paging.</param>
@@ -22,7 +22,7 @@ namespace Microsoft.EntityFrameworkCore
         public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int pageIndex, int pageSize, int indexFrom = 0) => new PagedList<T>(source, pageIndex, pageSize, indexFrom);
 
         /// <summary>
-        /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="converter"/>, <paramref name="pageIndex"/> and <paramref name="pageSize"/>
+        /// 对指定区间的数据源分页并转换类型
         /// </summary>
         /// <typeparam name="TSource">The type of the source.</typeparam>
         /// <typeparam name="TResult">The type of the result</typeparam>

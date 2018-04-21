@@ -8,62 +8,61 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace Microsoft.EntityFrameworkCore
 {
     /// <summary>
-    /// Defines the interface(s) for unit of work.
+    /// 工作单元
     /// </summary>
     public interface IUnitOfWork : IDisposable
     {
         /// <summary>
-        /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
+        /// 修改数据库名称. 前提是数据库在同一台主机. NOTE: 仅仅适用于用Mysql
         /// </summary>
-        /// <param name="database">The database name.</param>
+        /// <param name="database">数据库名称</param>
         /// <remarks>
-        /// This only been used for supporting multiple databases in the same model. This require the databases in the same machine.
+        /// 这仅用于支持同一模型中的多个数据库。这需要数据库在同一台机器上。
         /// </remarks>
         void ChangeDatabase(string database);
 
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        ///获取指定仓储对象 
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
+        /// <typeparam name="TEntity">Entity类型（对应于表名）</typeparam>
+        /// <returns>返回此仓储对象实例</returns>
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
 
         /// <summary>
-        /// Saves all changes made in this context to the database.
+        /// 将此上下文中的所有更改保存到数据库。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if sayve changes ensure auto record the change history.</param>
-        /// <returns>The number of state entries written to the database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录。</param>
+        /// <returns>写入数据库执行成功的状态实体的数量。</returns>
         int SaveChanges(bool ensureAutoHistory = false);
 
         /// <summary>
-        /// Asynchronously saves all changes made in this unit of work to the database.
+        ///异步保存此次上下文对数据库所做的所有更改。
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> 如果保存更改，请确保自动记录更改历史记录</param>
+        /// <returns>A <see cref="Task{TResult}"/>这表示异步保存操.任务结果包含写入数据库的状态实体的数量。</returns>
         Task<int> SaveChangesAsync(bool ensureAutoHistory = false);
 
         /// <summary>
-        /// Executes the specified raw SQL command.
+        /// 执行指定的原生SQL指令
         /// </summary>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>The number of state entities written to database.</returns>
+        /// <param name="sql">原生SQL</param>
+        /// <param name="parameters">SQL参数</param>
+        /// <returns>写入数据库执行成功的状态实体的数量。</returns>
         int ExecuteSqlCommand(string sql, params object[] parameters);
 
         /// <summary>
-        /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity"/> data.
+        /// 使用原生SQL查找指定实体的数据 
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>An <see cref="IQueryable{T}"/> that contains elements that satisfy the condition specified by raw SQL.</returns>
+        /// <param name="sql">原生SQL</param>
+        /// <param name="parameters">参数.</param>
+        /// <returns>An <see cref="IQueryable{TEntity}" /> 其中包含满足原始SQL指定条件的元素。</returns>
         IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class;
 
         /// <summary>
-        /// Uses TrakGrap Api to attach disconnected entities
+        /// 使用TrakGrap Api 附加分离到实体
         /// </summary>
-        /// <param name="rootEntity"> Root entity</param>
-        /// <param name="callback">Delegate to convert Object's State properities to Entities entry state.</param>
+        /// <param name="rootEntity">根实体</param>
+        /// <param name="callback">委托方法将对象的状态转换为实体进入状态。.</param>
         void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback);
     }
 }
